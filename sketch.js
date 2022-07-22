@@ -1,71 +1,61 @@
 const Engine = Matter.Engine;
+const Render = Matter.Render;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Constraint = Matter.Constraint;
 const Body = Matter.Body;
+const Composites = Matter.Composites;
+const Composite = Matter.Composite;
 
-var ball,groundObj,leftSide,rightSide;
-var world;
-var radius = 70;
-
-function preload(){
-//find the bug in the below code
-	dustbinImg = loadImage("dustbin.png");
-	paperImg = loadImage("paper.png");
-
-}
-
+let engine;
+let world;
+var ball;
+var blower;
+var blowerMouth;
+var button;
 
 function setup() {
-	createCanvas(1600, 700);
-	rectMode(CENTER);
+  var canvas = createCanvas(500, 500);
 
-	engine = Engine.create();
-	world = engine.world;
+  engine = Engine.create();
+  world = engine.world;
 
-	var ball_options={
-		isStatic:false,
-		restitution:0.3,
-		density:0.4
-	}
+  ball = new Ball(width / 2 + 80, height / 2 - 80, 80, 80);
+  blower = new Blower(width / 2 - 50, height / 2 + 50, 150, 20);
+  blowerMouth = new BlowerMouth(width / 2 + 70, height / 2 + 20, 100, 90);
+  button = createImg('click.png');
+button.position(20,30);
+button.size(50,50);
 
-	ball = Bodies.circle(260,100,radius/2.6,ball_options);
-	World.add(world,ball);
 
-	ground=new Ground(width/2,670,width,20);
-	leftSide = new Ground(1100,600,10,120);
-	rightSide = new Ground(1270,600,10,120);
-	bottomSide = new Ground(1185,650,150,20);
+// buttonmouseClicked(blow);
 
-	Engine.run(engine);
-  
+ button.mouseClicked(blow);
+
+// button.Clicked(blow);
+
+// button.mouse(blow);
+
+
 }
-
 
 function draw() {
-	background(200);
-	rectMode(CENTER);
+  background(59);
+  Engine.update(engine);
 
-
-	ground.display();
-	leftSide.display();  
-	rightSide.display();
-	bottomSide.display();
-
-	
-	imageMode(CENTER);
-		//use image() command to add paper image to the ball
-image(paperImg,ball.position.x,ball.position.y,radius,radius);
-
-	// use image() command to add dustbin image in the canvas.
-	image(dustbinImg,1185, 570, 200,200);
-	
-
+  blower.show();
+  ball.show();
+  blowerMouth.show();
 }
 
-function keyPressed() {
-  	if (keyCode === UP_ARROW) {
+function blow() {
+  
+  Matter.Body.applyForce(ball.body, { x: 0, y: 0 }, { x: 0, y: -0.05 });
+  
+  // Matter.Body.applyForce(ball.body, { x: 0, y: 0 }, { x: 0.05, y: 0.05 });
+  
+  //Matter.Body.applyForce(ball.body, { x: 0, y: 0 }, { x: 0, y: 0.05 });
+  
+  // Matter.Body.applyForce(ball.body, { x: 0, y: 0 }, { x: -0.05, y: 0.05 });
 
-		Matter.Body.applyForce(ball,ball.position,{x:85,y:-85});
-    
-  	}
 }
